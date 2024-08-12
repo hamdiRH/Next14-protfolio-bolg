@@ -98,12 +98,12 @@ export default function blogs() {
                       <td>{blog.slug}</td>
                       <td>
                         <div className="flex gap-2 flex-center">
-                          <Link href={"/blogs/edit/" + blog._id}>
+                          <Link href={"/admin/blogs/edit/" + blog._id}>
                             <button title="edit">
                               <FaEdit />
                             </button>
                           </Link>
-                          <Link href={"/blogs/delete/" + blog._id}>
+                          <Link href={"/admin/blogs/delete/" + blog._id}>
                             <button title="delete">
                               <RiDeleteBin6Fill />
                             </button>

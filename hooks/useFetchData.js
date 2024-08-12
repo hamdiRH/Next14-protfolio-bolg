@@ -4,6 +4,7 @@ const { useState, useEffect } = require("react");
 function useFetchData(apiEndPoint) {
   const [alldata, setAlldata] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ function useFetchData(apiEndPoint) {
       try {
         const res = await axios.get(apiEndPoint);
         const alldata = res.data;
+
         setAlldata(alldata);
         setLoading(false); //set loading state to false after dat is fetched
       } catch {}
@@ -27,8 +29,8 @@ function useFetchData(apiEndPoint) {
     if (apiEndPoint) {
       fetchAllData();
     }
-  }, [initialLoad, apiEndPoint]);
+  }, [initialLoad, apiEndPoint, refresh]);
 
-  return { alldata, loading };
+  return { alldata, loading, setLoading, setRefresh };
 }
 export default useFetchData;

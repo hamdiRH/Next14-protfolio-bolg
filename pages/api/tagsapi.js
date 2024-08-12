@@ -25,7 +25,8 @@ export default async function handle(req, res) {
 
   // update
   if (method === "PUT") {
-    await Tag.updateOne({ _id }, { name, slug, description });
+    const { name, slug, description } = req.body;
+    await Tag.updateOne({ _id: req.query.id }, { name, slug, description });
     res.json(true);
   }
 

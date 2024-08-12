@@ -1332,4 +1332,15 @@
     padding: 2rem;
     z-index: 5;
   }
+  .addtag {
+    padding: 1rem;
+    background-color: #8667b0;
+    color: #fff;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1.4rem;
+    transition: 0.3s ease;
+    cursor: pointer;
+  }
 }

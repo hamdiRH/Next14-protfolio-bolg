@@ -1,10 +1,10 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { IoHome } from "react-icons/io5";
-import { BsPostcard } from "react-icons/bs";
+import { BsPostcard, BsTag } from "react-icons/bs";
 import { MdOutlinePending, MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
-import { FaTag } from "react-icons/fa6";
+
 import { useRouter } from "next/router";
 
 export default function Aside() {
@@ -70,7 +70,7 @@ export default function Aside() {
                 handleLinkClick("/admin/tags");
               }}
             >
-              <FaTag />
+              <BsTag />
               <span>Tags</span>
             </li>
           </Link>

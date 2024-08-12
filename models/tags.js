@@ -26,14 +26,5 @@ const tagSchema = new Schema({
 });
 
 // // Create a pre-save middleware to generate a slug from the tag name
-tagSchema.pre("save", function (next) {
-  if (this.isModified("name")) {
-    this.slug = this.name
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
-  next();
-});
 
-export const Tag = models.Tag || model("Tag", tagSchema, "blogtest");
+export const Tag = models.Tag || model("Tag", tagSchema, "tags");

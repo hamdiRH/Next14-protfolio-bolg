@@ -10,4 +10,4 @@ const BlogSchema = new Schema(
   },
   { timestamps: true } // this option will automatically manage createdat abd updatedat fields
 );
-export const Blog = models.Blog || model("Blog", BlogSchema, "blogtest");
+export const Blog = models.Blog || model("Blog", BlogSchema, "blogs");
