@@ -1,5 +1,5 @@
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useFetchData from "@/hooks/useFetchData";
 import { BsPostcard, BsTag } from "react-icons/bs";
 import axios from "axios";
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import Dataloading from "@/components/DataLoading";
-import Pagination from "@etchteam/next-pagination";
+import Pagination from "rc-pagination";
 
 export default function tags() {
   const [selectedTag, setSelectedTag] = useState();
@@ -18,6 +18,10 @@ export default function tags() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [tagTitle, setTagTitle] = useState("");
+  const [tagIcon, setTagIcon] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -27,6 +31,7 @@ export default function tags() {
 
   const openUpdateModal = () => setIsUpdateModalOpen(true);
   const closeUpdateModal = () => setIsUpdateModalOpen(false);
+  const [Icons, setIcons] = useState();
 
   const handleSlug = (title) => {
     return title
@@ -40,6 +45,7 @@ export default function tags() {
       await axios.post("/api/tagsapi", {
         name: tagTitle,
         slug: handleSlug(tagTitle),
+        iconName: tagIcon,
       });
       closeModal();
       setRefresh((prev) => !prev);
@@ -61,15 +67,26 @@ export default function tags() {
         _id: selectedTag?._id,
         slug: handleSlug(selectedTag?.name),
         name: selectedTag?.name,
+        iconName: selectedTag?.iconName,
       });
       closeUpdateModal();
       setRefresh((prev) => !prev);
       setLoading(true);
     } catch (error) {}
   };
-  const handlePageChange = (props) => {
-    console.log("🚀 ~ handlePageChange ~ props:", props);
+  const handlePageChange = (current, pageSize) => {
+    console.log("🚀 ~ handlePageChange ~ pageSize:", pageSize);
+    console.log("🚀 ~ handlePageChange ~ current:", current);
   };
+
+  useEffect(() => {
+    const loadIcon = async () => {
+      const Icon = await import("react-icons/fa").then((m) => m["FaHtml5"]);
+      setIcons(() => Icon);
+    };
+    loadIcon();
+  }, []);
+
   return (
     <ProtectedRoute>
       <Modal isOpen={isDeleteModalOpen} onClose={closeDeleteModal} hideCloseBtn>
@@ -120,6 +137,19 @@ export default function tags() {
               onChange={(e) => setTagTitle(e.target.value)}
             />
           </div>
+          <div
+            className="w-100 flex flex-col flex-left mb-2"
+            data-aos="fade-up"
+          >
+            <label htmlFor="Title">Icon</label>
+            <input
+              type="text"
+              id="icon"
+              placeholder="Enter icon name"
+              value={tagIcon}
+              onChange={(e) => setTagIcon(e.target.value)}
+            />
+          </div>
           {/* Save button */}
           <div className="w-100 mb-2" data-aos="fade-up">
             <button type="submit" className="w-100 addwebbtn flex-center">
@@ -143,6 +173,24 @@ export default function tags() {
               value={selectedTag?.name}
               onChange={(e) =>
                 setSelectedTag((prev) => ({ ...prev, name: e.target.value }))
+              }
+            />
+          </div>
+          <div
+            className="w-100 flex flex-col flex-left mb-2"
+            data-aos="fade-up"
+          >
+            <label htmlFor="Title">Icon</label>
+            <input
+              type="text"
+              id="icon"
+              placeholder="Enter icon name"
+              value={selectedTag?.iconName}
+              onChange={(e) =>
+                setSelectedTag((prev) => ({
+                  ...prev,
+                  iconName: e.target.value,
+                }))
               }
             />
           </div>
@@ -176,6 +224,7 @@ export default function tags() {
                 <th>#</th>
                 <th>Title</th>
                 <th>Slug</th>
+                <th>Icon</th>
                 <th>Edit / Delete</th>
               </tr>
             </thead>
@@ -188,7 +237,7 @@ export default function tags() {
                 </tr>
               ) : alldata.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="text-center">
+                  <td colSpan={5} className="text-center">
                     No Tags
                   </td>
                 </tr>
@@ -199,6 +248,10 @@ export default function tags() {
                       <td>{index + 1}</td>
                       <td>{item.name}</td>
                       <td>{item.slug}</td>
+                      <td>
+                        {Icons && <Icons />}
+                        {item.iconName}
+                      </td>
                       <td>
                         <div className="flex gap-2 flex-center">
                           <button
@@ -229,9 +282,9 @@ export default function tags() {
             </tbody>
           </table>
           <Pagination
-            total={10}
-            sizes={[1, 2, 5, 10, 20, 50, 100]}
-            currentPage={3}
+            total={30}
+            pageSize={pageSize}
+            currentPage={currentPage}
             onChange={handlePageChange}
           />
         </div>

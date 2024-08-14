@@ -9,11 +9,12 @@ export default async function handle(req, res) {
 
   // data send or post
   if (method === "POST") {
-    const { name, slug, description } = req.body;
+    const { name, slug, description, iconName } = req.body;
     const tagDoc = await Tag.create({
       name,
       slug,
       description,
+      iconName,
     });
     res.json(tagDoc);
   }
@@ -25,8 +26,11 @@ export default async function handle(req, res) {
 
   // update
   if (method === "PUT") {
-    const { name, slug, description } = req.body;
-    await Tag.updateOne({ _id: req.query.id }, { name, slug, description });
+    const { name, slug, description, iconName } = req.body;
+    await Tag.updateOne(
+      { _id: req.query.id },
+      { name, slug, description, iconName }
+    );
     res.json(true);
   }
 

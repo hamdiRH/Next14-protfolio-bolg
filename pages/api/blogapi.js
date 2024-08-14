@@ -26,6 +26,7 @@ export default async function handle(req, res) {
     if (req.query?.id) {
       res.json(await Blog.findById(req.query.id));
     } else {
+      // if (req.query?.blogcategory) or tags
       res.json((await Blog.find()).reverse());
     }
   }
@@ -47,5 +48,7 @@ export default async function handle(req, res) {
       await Blog.deleteOne({ _id: req.query?.id });
       res.json(true);
     }
+  } else {
+    res.status(405).json({ message: "Method not allowed" });
   }
 }

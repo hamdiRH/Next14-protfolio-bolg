@@ -19,6 +19,9 @@ const tagSchema = new Schema({
     type: String,
     maxlength: 200,
   },
+  iconName: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

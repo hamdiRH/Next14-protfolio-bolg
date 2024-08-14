@@ -1,0 +1,321 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: rgb(248, 250, 252);
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  overflow-x: hidden;
+}
+body.dark {
+  background-color: #1a202c;
+}
+.dark .header_sec {
+  background-color: #2d3748;
+}
+.dark .header {
+  color: #c8d7f2;
+}
+.nav_list_dark {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav_list_dark ul {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav_list_dark ul li a {
+  font-size: 18px;
+  font-weight: 600;
+  color: #5e75a4;
+}
+
+.dark .nav_list_dark ul li a {
+  font-size: 18px;
+  font-weight: 600;
+  color: #c8d7f2;
+}
+
+.nav_list_dark ul li a:hover {
+  color: #5485e0;
+}
+
+.darkmode {
+  position: relative;
+}
+
+/* The switch - the box around the slider */
+.darkmode .switch {
+  display: block;
+  --width-of-switch: 3.5em;
+  --height-of-switch: 2em;
+  /* size of sliding icon -- sun and moon */
+  --size-of-icon: 1.4em;
+  /* it is like a inline-padding of switch */
+  --slider-offset: 0.3em;
+  position: relative;
+  width: var(--width-of-switch);
+  height: var(--height-of-switch);
+}
+
+/* Hide default HTML checkbox */
+.darkmode .switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.darkmode .slider_header {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #f4f4f5;
+  box-shadow: 0 0 10px #999;
+  transition: 0.4s;
+  border-radius: 30px;
+}
+
+.darkmode .slider_header:before {
+  position: absolute;
+  content: "";
+  height: var(--size-of-icon, 1.4em);
+  width: var(--size-of-icon, 1.4em);
+  border-radius: 20px;
+  left: var(--slider-offset, 0.3em);
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(40deg, #ff0080, #ff8c00 70%);
+  transition: 0.4s;
+}
+
+.darkmode input:checked + .slider_header {
+  background-color: #303136;
+}
+
+.darkmode input:checked + .slider_header:before {
+  left: calc(100% - (var(--size-of-icon, 1.4em) + var(--slider-offset, 0.3em)));
+  background: #303136;
+  /* change the value of second inset in box-shadow to change the angle and direction of the moon  */
+  box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+}
+
+.dark .search_click {
+  background-color: #2b3a53ad;
+}
+
+.dark .searchab_input {
+  background-color: #718096;
+  box-shadow: none;
+}
+
+.dark .search_click svg {
+  color: #e2e8f0;
+}
+
+.dark .search_click input {
+  color: #e2e8f0;
+}
+
+.dark .search_click input::placeholder {
+  color: #e2e8f0;
+}
+
+.dark .search_data {
+  background-color: #2d3748;
+  border: 1px solid #999;
+  color: #e2e8f0 !important;
+}
+
+.dark .exit_search h4 {
+  color: #fff;
+}
+
+.dark .navlist_mobile_ul button {
+  color: #fff;
+  background-color: transparent;
+}
+
+.dark .header_data_section {
+  background: #2d3748;
+}
+
+.dark .leftheader_info h1 {
+  color: #edf2f7;
+}
+
+.dark .leftheader_info h3 {
+  color: #cbd5e0;
+}
+
+.dark .leftheader_info a:nth-child(2) button {
+  background-color: transparent;
+  border: 2px solid #ededed;
+  color: #e4e4e4;
+}
+
+.dark .image_bg_top {
+  background-color: #8f9fe6 !important;
+  z-index: -1;
+}
+
+.dark .image_bg_top2 {
+  box-shadow: 0.7rem 1.4rem #797b85;
+}
+
+.dark .main_blog_section {
+  background-color: #1a202c;
+}
+
+.dark .leftblog_sec h2 {
+  color: #edf2f7;
+}
+
+.dark .blog {
+  background-color: #2d3748;
+  border: none;
+}
+
+.dark .blog:hover {
+  box-shadow: 0 5px 10px #475060;
+}
+
+.dark .bloginfo h3 {
+  color: #edf2f7;
+}
+
+.dark .blogaimg {
+  background-color: #7c91ac;
+}
+
+.dark .bloginfo h4 {
+  color: #edf2f7ce;
+}
+
+.dark .topics_sec h2 {
+  color: #edf2f7;
+}
+
+.dark .topics {
+  border: none;
+  box-shadow: none;
+  background-color: #2d3748;
+}
+
+.dark .topics h3 {
+  color: #e8e8e8;
+}
+
+.dark .topics:hover {
+  box-shadow: 0 5px 10px #4c4c4c;
+  transform: translateY(-5px);
+}
+
+.dark .tags_sec h2 {
+  color: #edf2f7;
+}
+
+.dark .tags_list {
+  border: none;
+  background-color: #2d3748;
+  box-shadow: none;
+}
+
+.dark .letstalk_sec h2 {
+  color: #edf2f7;
+}
+
+.dark .talk_sec {
+  background-color: #2d3748;
+  border: none;
+  box-shadow: none;
+}
+
+.dark .talk_sec h4 {
+  color: #c1c1c1;
+}
+
+.dark .footer {
+  background-color: #2d3748;
+}
+
+.dark .footer_logo h4 {
+  color: #999;
+}
+
+.dark .footer_logo h3 {
+  color: #6d95b7;
+}
+.dark .footer_logo span {
+  color: #4f7fe0;
+}
+.dark .q_links h3 {
+  color: #799fe2;
+}
+.dark .q_links ul li {
+  color: #929eb4;
+}
+.dark .slugpage {
+  background-color: #1a202c;
+}
+.dark .slugtitle {
+  color: #edf2f7;
+}
+.dark .topslug_titles h5 {
+  color: #aec2dd;
+}
+.dark .topslug_titles h5 span {
+  color: #edf2f7;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.dark .blogcontent {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+.dark .slug_profile_info {
+  border: none;
+  background-color: #2d3748;
+}
+.dark .slug_profile_info h3 {
+  color: #becbe0;
+}
+.dark .slug_profile_info h4 {
+  color: #8d99ae;
+}
+
+.dark .category_title h1 {
+  color: #fcfcfc;
+}
+
+.dark .category_title p {
+  color: #999;
+}
+
+.dark .cate_blog {
+  background-color: #2d3748;
+  box-shadow: 0 0 5px #222;
+}
+.dark .cate_blog:hover {
+  box-shadow: 0 0 5px #555;
+}
+
+@media screen and (max-width: 1043px) {
+  .nav_list_dark ul {
+    display: none;
+  }
+
+  .darkmode {
+    display: none;
+  }
+}
