@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MarkdownEditor from "react-markdown-editor-lite";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import makeAnimated from "react-select/animated";
+import Select from "react-select";
+import { useDropzone } from "react-dropzone";
 
+const animatedComponents = makeAnimated();
 export default function Blog({
   _id,
   title: existingTile,
@@ -19,35 +23,93 @@ export default function Blog({
   const [slug, setSlug] = useState(existingSlug || "");
   const [category, setCategory] = useState(existingCategory || []);
   const [description, setDescription] = useState(existingDescription || "");
-  const [tags, setTags] = useState(existingTags || []);
+  const [allTags, setAllTags] = useState(existingTags || []);
   const [status, setStatus] = useState(existingStatus || "draft");
+  const [file, setFile] = useState(null);
+  const [uploadedData, setUploadedData] = useState();
 
+  const onDrop = useCallback((acceptedFiles) => {
+    acceptedFiles.forEach((file) => {
+      setFile(
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      );
+      const reader = new FileReader();
+
+      reader.onabort = () => console.log("file reading was aborted");
+      reader.onerror = () => console.log("file reading has failed");
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        const binaryStr = reader.result;
+        console.log("binaryStr", binaryStr);
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }, []);
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const [tags, setTags] = useState(existingTags || []);
   async function createProduct(ev) {
     ev.preventDefault();
-    const data = {
-      title,
-      slug,
-      description,
-      blogcategory: category,
-      tags,
-      status,
-    };
-    if (_id) {
-      await axios.put("/api/blogapi", { ...data, _id });
-    } else {
-      await axios.post("/api/blogapi", data);
-    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("title", title);
+    formData.append("slug", slug);
+    formData.append("category", category);
+    formData.append("tags", JSON.stringify(tags));
+    formData.append("status", status);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+    const uploadedData = await response.json();
+    setUploadedData(uploadedData.data);
+
     setRedirect(true);
+
+    // const data = {
+    //   title,
+    //   slug,
+    //   description,
+    //   blogcategory: category,
+    //   tags,
+    //   status,
+    // };
+    // if (_id) {
+    //   await axios.put("/api/blogapi", { ...data, _id });
+    // } else {
+    //   await axios.post("/api/blogapi", data);
+    // }
+    // setRedirect(true);
   }
   if (redirect) {
     router.push("/");
     return null;
   }
+
   const handleSlugChnage = (ev) => {
     const inputValue = ev.target.value;
-    const newSlug = inputValue.replace("/s+/g", "-");
+    const newSlug = inputValue
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
     setSlug(newSlug);
   };
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get(`/api/tagsapi`);
+        setAllTags(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchTags();
+  }, []);
+
   return (
     <form className="addWebsiteform" onSubmit={createProduct}>
       {/* blog title */}
@@ -59,6 +121,7 @@ export default function Blog({
           value={title}
           onChange={(e) => {
             setTitle(e.target.value);
+            handleSlugChnage(e);
           }}
           placeholder="Enter small title"
           required
@@ -73,10 +136,11 @@ export default function Blog({
           placeholder="Enter slug url"
           value={slug}
           onChange={handleSlugChnage}
+          disabled
         />
       </div>
       {/* blog category */}
-      <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
+      {/* <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
         <label htmlFor="category">Category</label>
         <select
           name="category"
@@ -98,12 +162,58 @@ export default function Blog({
         <p className="existingcategory flex gap-1 mt-1 mb-1">
           selected: <span>{JSON.stringify(category)}</span>
         </p>
+      </div> */}
+
+      {/* tags */}
+      <div className="w-100 flex flex-col flex-left mb-25 " data-aos="fade-up">
+        <label htmlFor="tags">tags</label>
+
+        <Select
+          isMulti
+          options={allTags.map((el) => ({ value: el._id, label: el.slug }))}
+          onChange={(el) => setTags(el.map((el) => el.value))}
+          components={animatedComponents}
+          closeMenuOnSelect={false}
+          className="custom-multiselect"
+        />
       </div>
+      {/* Image cover */}
+      <div className="w-100 flex flex-col flex-left mb-25 ">
+        <label htmlFor="tags">Image</label>
+        <div {...getRootProps()} className="dropzone">
+          <input {...getInputProps()} />
+          {file ? (
+            <img
+              crossOrigin="anonymous"
+              referrerPolicy="origin"
+              src={file.preview}
+              alt="img drop"
+              style={{ objectFit: "contain", width: "100%", height: "100%" }}
+            />
+          ) : (
+            <p>Drag 'n' drop some files here, or click to select files</p>
+          )}
+        </div>
+      </div>
+      {/* status */}
+      <div className="w-100 flex flex-col flex-left mb-2">
+        <label htmlFor="status">Status</label>
+        <select
+          name="status"
+          id="status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+        >
+          <option value="draft">draft</option>
+          <option value="publish">publish</option>
+        </select>
+        <div className="existingcategory flex gap-1 mt-1 mb-1">
+          selected: <span>{status}</span>
+        </div>
+      </div>
+
       {/* markdown description content */}
-      <div
-        className="description w-100 flex flex-col flex-left mb-2"
-        data-aos="fade-up"
-      >
+      <div className="description w-100 flex flex-col flex-left mb-2">
         <label htmlFor="description">Blog Content</label>
         <MarkdownEditor
           value={description}
@@ -155,47 +265,6 @@ export default function Blog({
             </ReactMarkdown>
           )}
         />
-      </div>
-      {/* tags */}
-      <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
-        <label htmlFor="tags">tags</label>
-        <select
-          name="tags"
-          id="tags"
-          value={tags}
-          onChange={(e) =>
-            setTags(
-              Array.from(e.target.selectedOptions, (option) => option.value)
-            )
-          }
-          multiple
-        >
-          <option value="html">Html</option>
-          <option value="css">css</option>
-          <option value="javascript">javascript</option>
-          <option value="nextjs">nextjs</option>
-          <option value="reactjs">reactjs</option>
-          <option value="database">database</option>
-        </select>
-        <div className="existingcategory flex gap-1 mt-1 mb-1">
-          selected: <span>{JSON.stringify(tags)}</span>
-        </div>
-      </div>
-      {/* status */}
-      <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
-        <label htmlFor="status">Status</label>
-        <select
-          name="status"
-          id="status"
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-        >
-          <option value="draft">draft</option>
-          <option value="publish">publish</option>
-        </select>
-        <div className="existingcategory flex gap-1 mt-1 mb-1">
-          selected: <span>{status}</span>
-        </div>
       </div>
       {/* Save button */}
       <div className="w-100 mb-2" data-aos="fade-up">

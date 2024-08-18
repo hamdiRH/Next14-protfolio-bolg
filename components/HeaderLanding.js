@@ -5,11 +5,13 @@ import { LuSun } from "react-icons/lu";
 import { FaXmark } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 import useFetchData from "@/hooks/useFetchData";
+import { useSession } from "next-auth/react";
 
 export default function HeaderLanding() {
+  const { data: session } = useSession();
   const [searchopen, setSearchopen] = useState(false);
   const [aside, setAside] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const { alldata, loading } = useFetchData("/api/getblog");
 
@@ -34,10 +36,12 @@ export default function HeaderLanding() {
 
   useEffect(() => {
     const isDarkMode = localStorage.getItem("darkMode") === "true";
+
     setDarkMode(isDarkMode);
   }, []);
 
   useEffect(() => {
+    if (darkMode === undefined || darkMode === null) return;
     if (darkMode) {
       document.body.classList.add("dark");
       localStorage.setItem("darkMode", "true");
@@ -88,6 +92,7 @@ export default function HeaderLanding() {
             <li>
               <Link href="/">Contact</Link>
             </li>
+            <li>{session && <Link href="/admin">Dashboard</Link>}</li>
           </ul>
           {/* for mobile device */}
           <div className="navlist_mobile_ul">

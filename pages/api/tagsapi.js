@@ -21,7 +21,29 @@ export default async function handle(req, res) {
 
   // data fetch or get
   if (method === "GET") {
-    res.json(await Tag.find());
+    if (req.query?.page && req.query?.limit) {
+      const { page = 1, limit = 10 } = req.query;
+
+      // Convert page and limit to integers
+      const pageNum = parseInt(page);
+      const limitNum = parseInt(limit);
+
+      // Calculate the number of documents to skip
+      const skip = (pageNum - 1) * limitNum;
+
+      // Retrieve paginated results
+      const tags = await Tag.find().skip(skip).limit(limitNum);
+
+      // Optionally, you can also return the total count of documents
+      const totalCount = await Tag.countDocuments();
+
+      res.json({
+        totalPages: Math.ceil(totalCount / limitNum),
+        currentPage: pageNum,
+        totalItems: totalCount,
+        items: tags,
+      });
+    } else res.json(await Tag.find());
   }
 
   // update

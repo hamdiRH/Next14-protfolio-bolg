@@ -10,7 +10,6 @@ export default function categoryPage() {
   const router = useRouter();
 
   const { category } = router.query;
-  console.log("🚀 ~ categoryPage ~ category:", category);
 
   useEffect(() => {
     if (router.isReady) {
@@ -19,7 +18,6 @@ export default function categoryPage() {
           const res = await fetch(`/api/getblog?category=${category}`);
           const data = await res.json();
           // const data = await res.data;
-          console.log("🚀 ~ fetchBlogdata ~ data:", data);
 
           setBlog(data);
           setLoading(false);

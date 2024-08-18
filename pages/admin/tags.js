@@ -9,19 +9,24 @@ import { FaEdit } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import Dataloading from "@/components/DataLoading";
 import Pagination from "rc-pagination";
+import ReactIcon from "@/components/ReactIcon";
 
 export default function tags() {
   const [selectedTag, setSelectedTag] = useState();
-  const { alldata, loading, setRefresh, setLoading } =
-    useFetchData("/api/tagsapi");
+
+  const [refresh, setRefresh] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alldata, setAlldata] = useState([]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [tagTitle, setTagTitle] = useState("");
   const [tagIcon, setTagIcon] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [total, setTotal] = useState(0);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -31,7 +36,6 @@ export default function tags() {
 
   const openUpdateModal = () => setIsUpdateModalOpen(true);
   const closeUpdateModal = () => setIsUpdateModalOpen(false);
-  const [Icons, setIcons] = useState();
 
   const handleSlug = (title) => {
     return title
@@ -75,17 +79,26 @@ export default function tags() {
     } catch (error) {}
   };
   const handlePageChange = (current, pageSize) => {
-    console.log("🚀 ~ handlePageChange ~ pageSize:", pageSize);
-    console.log("🚀 ~ handlePageChange ~ current:", current);
+    setPage(current);
   };
 
   useEffect(() => {
-    const loadIcon = async () => {
-      const Icon = await import("react-icons/fa").then((m) => m["FaHtml5"]);
-      setIcons(() => Icon);
+    const fetchTags = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `/api/tagsapi?page=${page}&limit=${limit}`
+        );
+        const { totalPages, totalItems, items } = response.data;
+        setTotal(totalPages);
+        setAlldata(items || []);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    loadIcon();
-  }, []);
+    fetchTags();
+  }, [page, limit, refresh]);
 
   return (
     <ProtectedRoute>
@@ -121,7 +134,7 @@ export default function tags() {
           </div>
         </div>
       </Modal>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <Modal isOpen={isModalOpen} onClose={closeModal} hideContainer>
         <form className="addWebsiteform" onSubmit={handleAddTag}>
           <h2 className="text-center">Add tag</h2>
           <div
@@ -158,7 +171,11 @@ export default function tags() {
           </div>
         </form>
       </Modal>
-      <Modal isOpen={isUpdateModalOpen} onClose={closeUpdateModal}>
+      <Modal
+        isOpen={isUpdateModalOpen}
+        onClose={closeUpdateModal}
+        hideContainer
+      >
         <form className="addWebsiteform" onSubmit={handleUpdateTag}>
           <h2 className="text-center">Update tag</h2>
           <div
@@ -248,8 +265,12 @@ export default function tags() {
                       <td>{index + 1}</td>
                       <td>{item.name}</td>
                       <td>{item.slug}</td>
-                      <td>
-                        {Icons && <Icons />}
+                      <td className="flex gap-1 ">
+                        <ReactIcon
+                          icon={item.iconName}
+                          size={20}
+                          color="black"
+                        />
                         {item.iconName}
                       </td>
                       <td>
@@ -282,9 +303,9 @@ export default function tags() {
             </tbody>
           </table>
           <Pagination
-            total={30}
-            pageSize={pageSize}
-            currentPage={currentPage}
+            total={total}
+            pageSize={limit}
+            currentPage={page}
             onChange={handlePageChange}
           />
         </div>

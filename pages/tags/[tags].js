@@ -18,7 +18,6 @@ export default function TagsPage() {
           const res = await fetch(`/api/getblog?tags=${tags}`);
           const data = await res.json();
           // const data = await res.data;
-          console.log("🚀 ~ fetchBlogdata ~ data:", data);
 
           setBlog(data);
           setLoading(false);

@@ -1,13 +1,14 @@
 import useFetchData from "@/hooks/useFetchData";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaHtml5 } from "react-icons/fa6";
 import { TbBrandNextjs } from "react-icons/tb";
 import { FiDatabase } from "react-icons/fi";
 import { AiOutlineDeploymentUnit } from "react-icons/ai";
 import { FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
 import LandingLayout from "@/components/LandingLayout";
+import ReactIcon from "@/components/ReactIcon";
 
 export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +19,7 @@ export default function Home() {
   const indexOfLastblog = currentPage * perPage;
   const indexOfFirstblog = indexOfLastblog - perPage;
   const currentBlogs = alldata.slice(indexOfFirstblog, indexOfLastblog);
+  const [tags, setTags] = useState([]);
 
   const allblog = alldata.length;
 
@@ -36,6 +38,21 @@ export default function Home() {
     const matches = markdownContent.match(regex);
     return matches ? matches[1] : null;
   }
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await fetch("/api/tagsapi");
+        const data = await res.json();
+        setTags(data);
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchTags();
+  }, []);
+
   return (
     <LandingLayout>
       <Head>
@@ -90,7 +107,7 @@ export default function Home() {
                         <Link href={`/blog/${blog.slug}`}>
                           <img
                             src={
-                              firstImageUrl ||
+                              blog?.file?.file_url ||
                               "https://placehold.co/600x400.png"
                             }
                             alt={blog.title}
@@ -98,9 +115,14 @@ export default function Home() {
                         </Link>
                       </div>
                       <div className="bloginfo">
-                        <Link href={`/blog/${blog.tags[0]}`}>
+                        {/* <Link href={`/blog/${blog.tags[0]}`}>
                           <div className="blogtag">{blog.tags[0]}</div>
-                        </Link>
+                        </Link> */}
+                        {blog.tags.map((tag) => (
+                          <Link href={`/blog/${tag.name}`} key={tag._id}>
+                            <div className="blogtag"># {tag.name}</div>
+                          </Link>
+                        ))}
                         <Link href={`/blog/${blog.slug}`}>
                           <h3>{blog.title}</h3>
                         </Link>
@@ -169,43 +191,25 @@ export default function Home() {
           </div>
           <div className="rightblog_info">
             <div className="topics_sec">
-              <h2>Topics</h2>
+              <h2>Tags</h2>
               <div className="topics_list">
-                <Link href="/topics/htmlcssjs">
-                  <div className="topics">
-                    <div className="flex flex center topics_svg">
-                      <FaHtml5 />
+                {tags.map((tag) => (
+                  <Link href={`/tags/${tag.name}`} key={tag}>
+                    <div className="topics">
+                      <div className="flex flex center topics_svg">
+                        <ReactIcon
+                          icon={tag.iconName}
+                          size={30}
+                          color="black"
+                        />
+                      </div>
+                      <h3>{tag.name}</h3>
                     </div>
-                    <h3>Html, Css & JavaScript</h3>
-                  </div>
-                </Link>
-                <Link href="/topics/nextJs">
-                  <div className="topics">
-                    <div className="flex flex center topics_svg">
-                      <TbBrandNextjs />
-                    </div>
-                    <h3>next js, React Js</h3>
-                  </div>
-                </Link>
-                <Link href="/topics/database">
-                  <div className="topics">
-                    <div className="flex flex center topics_svg">
-                      <FiDatabase />
-                    </div>
-                    <h3>database</h3>
-                  </div>
-                </Link>
-                <Link href="/topics/deployment">
-                  <div className="topics">
-                    <div className="flex flex center topics_svg">
-                      <AiOutlineDeploymentUnit />
-                    </div>
-                    <h3>Deployment</h3>
-                  </div>
-                </Link>
+                  </Link>
+                ))}
               </div>
             </div>
-            <div className="tags_sec mt-3">
+            {/* <div className="tags_sec mt-3">
               <h2>Tags</h2>
               <div className="tags_list">
                 <Link href="/tags/html">#html</Link>
@@ -215,7 +219,7 @@ export default function Home() {
                 <Link href="/tags/reactjs">#reactjs</Link>
                 <Link href="/tags/database">#database</Link>
               </div>
-            </div>
+            </div> */}
             <div className="letstalk_sec mt-3">
               <h2>Let's Talk</h2>
               <div className="talk_sec">

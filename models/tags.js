@@ -20,6 +20,7 @@ const tagSchema = new Schema({
     maxlength: 200,
   },
   iconName: {
+    trim: true,
     type: String,
   },
   createdAt: {

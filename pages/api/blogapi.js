@@ -24,10 +24,26 @@ export default async function handle(req, res) {
   // data fetch or get
   if (method === "GET") {
     if (req.query?.id) {
-      res.json(await Blog.findById(req.query.id));
+      res.json(
+        await Blog.findById(req.query.id).populate([
+          {
+            path: "tags",
+            model: "Tag",
+          },
+          { path: "file", model: "Document" },
+        ])
+      );
     } else {
       // if (req.query?.blogcategory) or tags
-      res.json((await Blog.find()).reverse());
+      res.json(
+        await Blog.find().populate([
+          {
+            path: "tags",
+            model: "Tag",
+          },
+          { path: "file", model: "Document" },
+        ])
+      );
     }
   }
 
