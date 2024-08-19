@@ -1,57 +1,24 @@
-import useFetchData from "@/hooks/useFetchData";
 import Head from "next/head";
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { FaHtml5 } from "react-icons/fa6";
-import { TbBrandNextjs } from "react-icons/tb";
-import { FiDatabase } from "react-icons/fi";
-import { AiOutlineDeploymentUnit } from "react-icons/ai";
+import { useEffect } from "react";
 import { FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
 import LandingLayout from "@/components/LandingLayout";
 import ReactIcon from "@/components/ReactIcon";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchBlogs } from "../redux/slices/blogsSlice";
+import { fetchTags } from "../redux/slices/tagsSlice";
 
 export default function Home() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const { alldata, loading } = useFetchData("/api/getblog");
-  const [perPage] = useState(1);
-  //filter published blogs
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const indexOfLastblog = currentPage * perPage;
-  const indexOfFirstblog = indexOfLastblog - perPage;
-  const currentBlogs = alldata.slice(indexOfFirstblog, indexOfLastblog);
-  const [tags, setTags] = useState([]);
-
-  const allblog = alldata.length;
-
-  const publishedBlogs = alldata.filter((blog) => blog.status === "publish");
-
-  const pageNumbers = [];
-  for (let i = 0; i < Math.ceil(allblog / perPage); i++) {
-    pageNumbers.push(i);
-  }
-
-  function extractFirstImageUrl(markdownContent) {
-    if (!markdownContent || typeof markdownContent !== "string") {
-      return null;
-    }
-    const regex = /!\[.*?\]\((.*?)\)/;
-    const matches = markdownContent.match(regex);
-    return matches ? matches[1] : null;
-  }
+  const dispatch = useDispatch();
+  const { blogs, loadingBlogs, errorBlogs } = useSelector(
+    (state) => state.blogs
+  );
+  const { tags, loadingTags, errorTags } = useSelector((state) => state.tags);
 
   useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const res = await fetch("/api/tagsapi");
-        const data = await res.json();
-        setTags(data);
-        console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchTags();
-  }, []);
+    dispatch(fetchBlogs());
+    dispatch(fetchTags());
+  }, [dispatch]);
 
   return (
     <LandingLayout>
@@ -61,7 +28,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <section className="header_data_section">
+      <section className="relative p-[4rem] pt-0 pb-0">
         <div className="container flex flex-sb w-100">
           <div className="leftheader_info">
             <h1>
@@ -94,13 +61,13 @@ export default function Home() {
           <div className="leftblog_sec">
             <h2>Recently Published</h2>
             <div className="blogs_sec">
-              {loading ? (
+              {loadingBlogs ? (
                 <div className="wh-100 flex flex-center mt-2 pb-5">
                   <div className="loader"></div>
                 </div>
               ) : (
-                publishedBlogs.map((blog) => {
-                  const firstImageUrl = extractFirstImageUrl(blog.description);
+                blogs.map((blog) => {
+                  // const firstImageUrl = extractFirstImageUrl(blog.description);
                   return (
                     <div className="blog" key={blog._id}>
                       <div className="blogimg">
@@ -160,7 +127,7 @@ export default function Home() {
                 })
               )}
             </div>
-            <div className="blogpagination">
+            {/* <div className="blogpagination">
               <button
                 onClick={() => paginate(currentPage - 1)}
                 disabled={currentPage === 1}
@@ -187,7 +154,7 @@ export default function Home() {
               >
                 Next
               </button>
-            </div>
+            </div> */}
           </div>
           <div className="rightblog_info">
             <div className="topics_sec">

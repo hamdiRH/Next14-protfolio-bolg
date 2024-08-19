@@ -1,14 +1,16 @@
 const { Schema, models, model, SchemaTypes } = require("mongoose");
+const Document = require("./document");
 const BlogSchema = new Schema(
   {
     title: { type: String },
     slug: { type: String, required: true },
     description: { type: String },
     blogcategory: [{ type: String }],
+    repositoryLink: { type: String },
     tags: [
       {
         type: SchemaTypes.ObjectId,
-        ref: "Tag",
+        ref: "tag",
       },
     ],
     file: {

@@ -1,8 +1,8 @@
 import nextConnect from "next-connect";
 import upload from "../../lib/multer";
-import { Document } from "@/models/document";
 import { mongooseconnect } from "@/lib/mongoose";
 import { Blog } from "@/models/blog";
+import { Document } from "@/models/document";
 
 const apiRoute = nextConnect({
   onError(error, req, res) {

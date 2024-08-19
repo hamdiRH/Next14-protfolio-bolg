@@ -34,4 +34,5 @@ const documentSchema = new Schema({
 
 // // Create a pre-save middleware to generate a slug from the tag name
 
-export const Document = models.Document || model("Document", documentSchema);
+export const Document =
+  models.Document || model("Document", documentSchema, "documents");
