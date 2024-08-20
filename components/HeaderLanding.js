@@ -5,15 +5,17 @@ import { LuSun } from "react-icons/lu";
 import { FaXmark } from "react-icons/fa6";
 import { useState, useEffect } from "react";
 import useFetchData from "@/hooks/useFetchData";
+import useDarkMode from "@/hooks/useDarkMode";
 import { useSession } from "next-auth/react";
 
 export default function HeaderLanding() {
   const { data: session } = useSession();
   const [searchopen, setSearchopen] = useState(false);
   const [aside, setAside] = useState(false);
-  const [darkMode, setDarkMode] = useState();
+  // const [darkMode, setDarkMode] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const { alldata, loading } = useFetchData("/api/getblog");
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
   const openSearch = () => {
     setSearchopen(true);
@@ -34,26 +36,26 @@ export default function HeaderLanding() {
     setAside(false);
   };
 
-  useEffect(() => {
-    const isDarkMode = localStorage.getItem("darkMode") === "true";
+  // useEffect(() => {
+  //   const isDarkMode = localStorage.getItem("darkMode") === "true";
 
-    setDarkMode(isDarkMode);
-  }, []);
+  //   setDarkMode(isDarkMode);
+  // }, []);
 
-  useEffect(() => {
-    if (darkMode === undefined || darkMode === null) return;
-    if (darkMode) {
-      document.body.classList.add("dark");
-      localStorage.setItem("darkMode", "true");
-    } else {
-      document.body.classList.remove("dark");
-      localStorage.setItem("darkMode", "false");
-    }
-  }, [darkMode]);
+  // useEffect(() => {
+  //   if (darkMode === undefined || darkMode === null) return;
+  //   if (darkMode) {
+  //     document.body.classList.add("dark");
+  //     localStorage.setItem("darkMode", "true");
+  //   } else {
+  //     document.body.classList.remove("dark");
+  //     localStorage.setItem("darkMode", "false");
+  //   }
+  // }, [darkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode((darkMode) => !darkMode);
-  };
+  // const toggleDarkMode = () => {
+  //   setDarkMode((darkMode) => !darkMode);
+  // };
 
   const publishedBlogs = alldata.filter((blog) => blog.status === "publish");
   const filtredBlogs =
@@ -97,7 +99,7 @@ export default function HeaderLanding() {
           {/* for mobile device */}
           <div className="navlist_mobile_ul">
             <button onClick={toggleDarkMode}>
-              {darkMode ? <IoMoonSharp /> : <LuSun />}
+              {isDarkMode ? <IoMoonSharp /> : <LuSun />}
             </button>
             <button onClick={openSearch}>
               <IoSearchSharp />
@@ -111,7 +113,7 @@ export default function HeaderLanding() {
               <input
                 type="checkbox"
                 onClick={toggleDarkMode}
-                defaultChecked={darkMode}
+                defaultChecked={isDarkMode}
               />
               <span className="slider_header"></span>
             </label>
