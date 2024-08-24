@@ -6,6 +6,7 @@ const initialState = {
   tags: [],
   loadingTags: false,
   errorTags: null,
+  tagsCount: 0,
 };
 
 // Async thunk for fetching tags
@@ -27,6 +28,7 @@ const tagsSlice = createSlice({
       .addCase(fetchTags.fulfilled, (state, action) => {
         state.loadingTags = false;
         state.tags = action.payload;
+        state.tagsCount = action.payload.length || 0;
       })
       .addCase(fetchTags.rejected, (state, action) => {
         state.loadingTags = false;

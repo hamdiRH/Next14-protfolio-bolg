@@ -5,7 +5,7 @@ import { FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
 import LandingLayout from "@/components/LandingLayout";
 import ReactIcon from "@/components/ReactIcon";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchBlogs } from "../redux/slices/blogsSlice";
+import { fetchBlogs } from "../redux/actions/blogActions";
 import { fetchTags } from "../redux/slices/tagsSlice";
 
 export default function Home() {
@@ -28,7 +28,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <section className="relative p-[4rem] pt-0 pb-0">
+      <section className="relative p-[4rem]">
         <div className="container flex flex-sb w-100">
           <div className="leftheader_info">
             <h1>
@@ -45,14 +45,8 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="rightheader_img">
-            <div className="image_bg_top"></div>
-            <div className="image_bg_top2"></div>
-            <img
-              src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png"
-              alt=""
-              style={{ margin: "auto" }}
-            />
+          <div className="rightheader_img ">
+            <img src="../prog character.png" alt="" />
           </div>
         </div>
       </section>

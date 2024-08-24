@@ -13,9 +13,20 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBlogs } from "@/redux/actions/blogActions";
+import { fetchTags } from "@/redux/slices/tagsSlice";
+import ReactIcon from "@/components/ReactIcon";
 
 export default function Home() {
-  const [blogsData, setBlogsData] = useState([]);
+  const dispatch = useDispatch();
+  const { blogs, publicBlogsCount, draftBlogsCount } = useSelector(
+    (state) => state.blogs
+  );
+  console.log("🚀 ~ Home ~ blogs:", blogs);
+  const { tags, loadingTags, errorTags, tagsCount } = useSelector(
+    (state) => state.tags
+  );
 
   ChartJS.register(
     CategoryScale,
@@ -38,23 +49,13 @@ export default function Home() {
       },
     },
   };
-
   useEffect(() => {
-    //fetch data from api
-    const fetchData = async () => {
-      try {
-        const response = await fetch("/api/blogapi");
-        const data = await response.json();
-        setBlogsData(data); // assuming data is an array of the blog objects
-      } catch (error) {
-        console.error("error fetching data", error);
-      }
-    };
-    fetchData();
-  }, []);
+    dispatch(fetchBlogs());
+    dispatch(fetchTags());
+  }, [dispatch]);
 
   // Aggregate data by year and month
-  const monthlydata = blogsData
+  const monthlydata = blogs
     .filter((dat) => dat.status === "publish")
     .reduce((acc, blog) => {
       const year = new Date(blog.createdAt).getFullYear(); // get the year
@@ -93,6 +94,7 @@ export default function Home() {
     labels,
     datasets,
   };
+  console.log("🚀 ~ Home ~ data:", data);
 
   return (
     <ProtectedRoute>
@@ -119,23 +121,19 @@ export default function Home() {
         <div className="topfourcards flex flex-sb">
           <div className="four_card" data-aos="fade-right">
             <h2>Total Blogs</h2>
-            <span>
-              {blogsData?.filter((ab) => ab.status === "publish").length || 0}
-            </span>
-          </div>
-          <div className="four_card" data-aos="fade-right">
-            <h2>Total Topics</h2>
-            <span>4</span>
-          </div>
-          <div className="four_card" data-aos="fade-left">
-            <h2>Total Tags</h2>
-            <span>6</span>
+            <span>{publicBlogsCount || 0}</span>
           </div>
           <div className="four_card" data-aos="fade-left">
             <h2>Draft Blogs</h2>
-            <span>
-              {blogsData?.filter((ab) => ab.status === "draft").length || 0}
-            </span>
+            <span>{draftBlogsCount || 0}</span>
+          </div>
+          <div className="four_card" data-aos="fade-right">
+            <h2>Total tags</h2>
+            <span>{tagsCount || 0}</span>
+          </div>
+          <div className="four_card" data-aos="fade-left">
+            <h2>--- ---</h2>
+            <span>__</span>
           </div>
         </div>
         {/* year overview */}
@@ -152,7 +150,8 @@ export default function Home() {
                 <div className="small-dot"></div>
               </ul>
               <h3 className="text-right">
-                10 / 365 <br /> <span>Total Published</span>
+                {publicBlogsCount} / {blogs.length} <br />{" "}
+                <span>Total Published</span>
               </h3>
             </div>
             <Bar data={data} options={options} />
@@ -179,22 +178,23 @@ export default function Home() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Html, css & JavaScript</td>
-                    <td>10</td>
-                  </tr>
-                  <tr>
-                    <td>Next Js, React Js</td>
-                    <td>10</td>
-                  </tr>
-                  <tr>
-                    <td>Database</td>
-                    <td>10</td>
-                  </tr>
-                  <tr>
-                    <td>Deployment</td>
-                    <td>10</td>
-                  </tr>
+                  {tags.map((tag) => (
+                    <tr key={tag._id}>
+                      <td className="flex gap-1">
+                        <ReactIcon
+                          icon={tag.iconName}
+                          size={30}
+                          color="black"
+                        />
+                        {tag.name}
+                      </td>
+                      <td>
+                        {blogs.filter((el) =>
+                          el.tags.some((elm) => elm.slug === tag.slug)
+                        ).length || 0}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

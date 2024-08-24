@@ -7,13 +7,17 @@ import { useState, useEffect } from "react";
 import useFetchData from "@/hooks/useFetchData";
 import useDarkMode from "@/hooks/useDarkMode";
 import { useSession } from "next-auth/react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchBlogs, setSearchQuery } from "../redux/actions/blogActions";
 
 export default function HeaderLanding() {
+  const dispatch = useDispatch();
+  const { blogs, searchQuery, loadingBlogs, errorBlogs } = useSelector(
+    (state) => state.blogs
+  );
   const { data: session } = useSession();
   const [searchopen, setSearchopen] = useState(false);
   const [aside, setAside] = useState(false);
-  // const [darkMode, setDarkMode] = useState();
-  const [searchQuery, setSearchQuery] = useState("");
   const { alldata, loading } = useFetchData("/api/getblog");
   const { isDarkMode, toggleDarkMode } = useDarkMode();
 
@@ -65,6 +69,11 @@ export default function HeaderLanding() {
           blog.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
+  useEffect(() => {
+    dispatch(fetchBlogs());
+  }, [dispatch]);
+
+  console.log("🚀 ~ HeaderLanding ~ searchQuery:", searchQuery);
   return (
     <div className="header_sec">
       <div className="container header">
@@ -78,7 +87,7 @@ export default function HeaderLanding() {
           <input
             onClick={openSearch}
             type="search"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
             value={searchQuery}
             placeholder="Discover news, articles and more"
           />
@@ -127,7 +136,7 @@ export default function HeaderLanding() {
             type="search"
             placeholder="Discover news, articles and more"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => dispatch(setSearchQuery(e.target.value))}
           />
         </div>
         <div className="search_data text-center">

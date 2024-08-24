@@ -30,13 +30,13 @@ export default function Footer() {
           <h3>Legal Stuff links</h3>
           <ul>
             <li>
-              <Link href="/">Privacy Notice</Link>
+              <Link href="/privacyNotice">Privacy Notice</Link>
             </li>
             <li>
-              <Link href="/">Cookie Policy</Link>
+              <Link href="/cookiePolicy">Cookie Policy</Link>
             </li>
             <li>
-              <Link href="/">Terms of Use</Link>
+              <Link href="/termsOfUse">Terms of Use</Link>
             </li>
           </ul>
         </div>

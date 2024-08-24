@@ -33,9 +33,33 @@ export default async function handle(req, res) {
           { path: "file", model: "Document" },
         ])
       );
+    } else if (req.query?.page) {
+      const { page, limit, searchQuery } = req.query;
+
+      const skip = (page - 1) * limit;
+      const totalResults = await Blog.countDocuments({
+        name: { $regex: searchQuery, $options: "i" },
+      });
+      const blogs = await Blog.find()
+        .populate([
+          {
+            path: "tags",
+            model: "Tag",
+          },
+          { path: "file", model: "Document" },
+        ])
+        .limit(limit)
+        .skip(skip);
+
+      return {
+        blogs,
+        totalResults,
+        totalPages: Math.ceil(totalResults / limit),
+        currentPage: page,
+      };
     } else {
       // if (req.query?.blogcategory) or tags
-      res.json(
+      const blogs = res.json(
         await Blog.find().populate([
           {
             path: "tags",
@@ -44,6 +68,7 @@ export default async function handle(req, res) {
           { path: "file", model: "Document" },
         ])
       );
+      return { blogs };
     }
   }
 

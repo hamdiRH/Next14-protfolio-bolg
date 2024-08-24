@@ -3,8 +3,11 @@ import React from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import Loading from "@/components/Loading";
+import OTPSecure from "@/components/OTPSecure";
+import { useSelector } from "react-redux";
 
 export default function Login() {
+  const { otpCode } = useSelector((state) => state.auth);
   const { data: session, status } = useSession();
   if (status === "loading") {
     // loading state, loader or any other indicator
@@ -23,7 +26,9 @@ export default function Login() {
   }
 
   if (!session) {
-    return (
+    return Number(otpCode) !== Number(process.env.NEXT_PUBLIC_OTP_CODE) ? (
+      <OTPSecure />
+    ) : (
       <div className="admin">
         <div className="loginfront flex flex-center flex-col full-w">
           <img

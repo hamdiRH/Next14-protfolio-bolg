@@ -9,10 +9,9 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import useFetchData from "@/hooks/useFetchData";
 import Dataloading from "@/components/DataLoading";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import Pagination from "rc-pagination";
 
 export default function blogs() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage] = useState(1);
@@ -117,38 +116,12 @@ export default function blogs() {
             </tbody>
           </table>
           {/* pagination pending start after database add ... */}
-          {filtredBlog.length === 0 ? (
-            ""
-          ) : (
-            <div className="blogpagination">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                Previous
-              </button>
-              {pageNumbers
-                .slice(
-                  Math.max(currentPage - 3, 1),
-                  Math.min(currentPage + 2, pageNumbers.length)
-                )
-                .map((number) => (
-                  <button
-                    key={number}
-                    onClick={() => paginate(number)}
-                    className={`${currentPage === number ? "active" : ""}`}
-                  >
-                    {number}
-                  </button>
-                ))}
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentBlogs.length < perPage}
-              >
-                Next
-              </button>
-            </div>
-          )}
+          <Pagination
+            total={total}
+            pageSize={limit}
+            currentPage={page}
+            onChange={handlePageChange}
+          />
         </div>
       </div>
     </ProtectedRoute>

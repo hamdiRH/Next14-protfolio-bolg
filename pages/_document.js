@@ -10,11 +10,11 @@ export default function Document() {
               (function() {
                 const savedTheme = localStorage.getItem('theme');
                 if (savedTheme) {
-                  document.documentElement.classList.add(savedTheme);
+                  document.body.classList.add(savedTheme);
                 } else {
                   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   if (prefersDark) {
-                    document.documentElement.classList.add('dark');
+                    document.body.classList.add('dark');
                   }
                 }
               })();

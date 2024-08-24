@@ -585,15 +585,14 @@
 
   .rightheader_img {
     position: relative;
-    width: 250px;
-    margin-right: 150px;
+    width: 350px;
+    margin-right: 50px;
   }
 
   .rightheader_img img {
     width: 100%;
     height: 100%;
-    margin-top: -25px;
-    margin-left: 40px;
+
     object-fit: cover;
     border-bottom-right-radius: 140px;
     z-index: 9;
@@ -1474,5 +1473,65 @@
     .slugtitle {
       font-size: 35px;
     }
+  }
+}
+.privacy-notice,
+.cookie-policy,
+.terms-of-use {
+  padding: 20px 0;
+  margin-bottom: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  /* Headings */
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: red;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #495057;
+  }
+
+  /* Paragraphs */
+  p {
+    margin: 10px 0;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  /* Lists */
+  ul {
+    margin: 10px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  /* Links */
+  a {
+    color: red;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 20px;
+  }
+
+  /* Effective Date */
+  strong {
+    font-weight: bold;
   }
 }

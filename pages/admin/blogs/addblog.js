@@ -19,10 +19,7 @@ export default function addblog() {
       </div>
     );
   }
-  // useEffect(() => {
-  //   // check if there's no active session and redirect to login page
-  //   if (!session) router.push("login");
-  // }, [session, router]);
+
   if (session)
     return (
       <ProtectedRoute>

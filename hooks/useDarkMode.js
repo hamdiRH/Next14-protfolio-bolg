@@ -8,20 +8,21 @@ export default function useDarkMode() {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       setIsDarkMode(savedTheme === "dark");
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      document.body.classList.toggle("dark", savedTheme === "dark");
+      // document.documentElement.classList.toggle("dark", savedTheme === "dark");
     } else {
       const prefersDark = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
       setIsDarkMode(prefersDark);
-      document.documentElement.classList.toggle("dark", prefersDark);
+      document.body.classList.toggle("dark", prefersDark);
     }
   }, []);
 
   const toggleDarkMode = () => {
     const newTheme = isDarkMode ? "light" : "dark";
     localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", !isDarkMode);
+    document.body.classList.toggle("dark", !isDarkMode);
     setIsDarkMode(!isDarkMode);
   };
 
