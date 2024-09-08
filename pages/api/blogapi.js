@@ -34,13 +34,38 @@ export default async function handle(req, res) {
         ])
       );
     } else if (req.query?.page) {
-      const { page, limit, searchQuery } = req.query;
+      const { page, limit, searchQuery, status } = req.query;
 
+      const name =
+        searchQuery == "undefined" ||
+        searchQuery == undefined ||
+        searchQuery == "null" ||
+        searchQuery == null
+          ? ""
+          : searchQuery;
       const skip = (page - 1) * limit;
+      const nameRegex = new RegExp(
+        name.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"),
+        "gi"
+      );
+      const statusRegex = new RegExp(
+        status.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&"),
+        "gi"
+      );
+
       const totalResults = await Blog.countDocuments({
-        name: { $regex: searchQuery, $options: "i" },
+        title: nameRegex,
+        status: statusRegex,
       });
-      const blogs = await Blog.find()
+
+      const blogs = await Blog.find({
+        $and: [
+          {
+            title: nameRegex,
+          },
+          { status: statusRegex },
+        ],
+      })
         .populate([
           {
             path: "tags",
@@ -51,15 +76,15 @@ export default async function handle(req, res) {
         .limit(limit)
         .skip(skip);
 
-      return {
+      res.json({
         blogs,
         totalResults,
         totalPages: Math.ceil(totalResults / limit),
         currentPage: page,
-      };
+      });
     } else {
       // if (req.query?.blogcategory) or tags
-      const blogs = res.json(
+      res.json(
         await Blog.find().populate([
           {
             path: "tags",
@@ -68,7 +93,6 @@ export default async function handle(req, res) {
           { path: "file", model: "Document" },
         ])
       );
-      return { blogs };
     }
   }
 

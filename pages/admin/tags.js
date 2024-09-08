@@ -25,7 +25,7 @@ export default function tags() {
   const [tagIcon, setTagIcon] = useState("");
 
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(20);
   const [total, setTotal] = useState(0);
 
   const openModal = () => setIsModalOpen(true);
@@ -51,6 +51,8 @@ export default function tags() {
         slug: handleSlug(tagTitle),
         iconName: tagIcon,
       });
+      setTagTitle("");
+      setTagIcon("");
       closeModal();
       setRefresh((prev) => !prev);
       setLoading(true);

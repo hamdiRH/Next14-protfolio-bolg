@@ -461,6 +461,9 @@
     display: flex;
     flex-direction: column;
   }
+  .h-90 {
+    height: 90%;
+  }
 
   .right_salescont {
     position: relative;
@@ -469,7 +472,7 @@
     border-radius: 50px;
     padding: 2.5rem 4rem;
     box-shadow: 0 0 10px #d4d4d4;
-    overflow: hidden;
+    // overflow: auto;
   }
 
   .leftyearoverview canvas {
@@ -560,31 +563,46 @@
     font-weight: 700;
   }
 
-  .blogscategory {
-    width: 100%;
-    height: 100%;
-  }
+  // .blogscategory {
+  //   width: 100%;
+  //   // height: 100%;
+  //   height: fit-content;
+  //   overflow: auto;
+  // }
 
-  .blogscategory table {
-    width: 100%;
-    color: #000;
-  }
+  // .blogscategory table {
+  //   width: 100%;
+  //   color: #000;
+  //   overflow: auto;
+  //   table-layout: fixed;
+  // }
+  // tr {
+  //   display: flex;
+  // }
 
-  .blogscategory thead tr {
-    background-color: rgb(230, 230, 230);
-    color: #000;
-    font-weight: 900;
-  }
+  // .blogscategory thead tr {
+  //   color: #000;
+  //   font-weight: 900;
+  // }
+  // .blogscategory tbody {
+  //   display: block;
+  //   margin-top: 30px;
+  //   height: 450px;
+  //   overflow-y: auto;
+  //   width: 100%;
+  // }
 
-  .blogscategory td {
-    list-style: auto;
-    padding: 2rem;
-    font-size: 1.3rem;
-  }
+  // .blogscategory td {
+  //   list-style: auto;
+  //   padding: 0.4rem;
+  //   font-size: 1.3rem;
+  // }
 
-  .blogscategory tbody tr:hover {
-    background-color: #e3e3e3;
-  }
+  // .blogscategory tbody tr:hover {
+  //   background-color: #e3e3e3;
+
+  //   overflow: auto;
+  // }
 
   /* ********************************************** */
   /* ******************************* BLOGS Page */
@@ -1201,12 +1219,12 @@
   @keyframes ringStroke42 {
     from,
     to {
-      stroke-dashoffset: 452;
+      strokedashoffset: 452;
       transform: rotate(-45deg);
     }
 
     50% {
-      stroke-dashoffset: 169.5;
+      strokedashoffset: 169.5;
       transform: rotate(-180deg);
     }
   }
@@ -1216,12 +1234,12 @@
     3%,
     47%,
     to {
-      stroke-dashoffset: -12;
+      strokedashoffset: -12;
     }
 
     14%,
     36% {
-      stroke-dashoffset: 0;
+      strokedashoffset: 0;
     }
   }
 

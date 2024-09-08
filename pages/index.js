@@ -16,7 +16,13 @@ export default function Home() {
   const { tags, loadingTags, errorTags } = useSelector((state) => state.tags);
 
   useEffect(() => {
-    dispatch(fetchBlogs());
+    dispatch(
+      fetchBlogs({
+        page: 1,
+        limit: 10,
+        status: "publish",
+      })
+    );
     dispatch(fetchTags());
   }, [dispatch]);
 
@@ -32,7 +38,7 @@ export default function Home() {
         <div className="container flex flex-sb w-100">
           <div className="leftheader_info">
             <h1>
-              Hi, I'm <span>Caesar</span>. <br />
+              Hi, I'm <span>Hamdi Rahal</span>. <br />
               FullStuck JS developer
             </h1>
             <h3>Specialized in javaScript, React and Next JS</h3>
@@ -157,7 +163,7 @@ export default function Home() {
                 {tags.map((tag) => (
                   <Link href={`/tags/${tag.name}`} key={tag}>
                     <div className="topics">
-                      <div className="flex flex center topics_svg">
+                      <div className="flex center topics_svg">
                         <ReactIcon
                           icon={tag.iconName}
                           size={30}

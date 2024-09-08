@@ -120,7 +120,7 @@ export default function Home() {
         {/* dashboard four cards */}
         <div className="topfourcards flex flex-sb">
           <div className="four_card" data-aos="fade-right">
-            <h2>Total Blogs</h2>
+            <h2>Published Blogs</h2>
             <span>{publicBlogsCount || 0}</span>
           </div>
           <div className="four_card" data-aos="fade-left">
@@ -157,9 +157,9 @@ export default function Home() {
             <Bar data={data} options={options} />
           </div>
 
-          <div className="right_salescont" data-aos="fade-up">
+          <div className="right_salescont " data-aos="fade-up">
             <div>
-              <h3>Blogs By Category</h3>
+              <h3 className="mb-5">Blogs By Category</h3>
               <ul className="creative-dots">
                 <li className="big-dot"></li>
                 <li className="semi-big-dot"></li>
@@ -169,34 +169,28 @@ export default function Home() {
                 <div className="small-dot"></div>
               </ul>
             </div>
-            <div className="blogscategory flex flex-center">
-              <table>
-                <thead>
-                  <tr>
-                    <td>Topics</td>
-                    <td>Data</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tags.map((tag) => (
-                    <tr key={tag._id}>
-                      <td className="flex gap-1">
-                        <ReactIcon
-                          icon={tag.iconName}
-                          size={30}
-                          color="black"
-                        />
-                        {tag.name}
-                      </td>
-                      <td>
-                        {blogs.filter((el) =>
-                          el.tags.some((elm) => elm.slug === tag.slug)
-                        ).length || 0}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="blogscategory overflow-y-scroll h-90 ">
+              <div className="grid grid-cols-4 w-full ">
+                <div className="text-left pl-4 col-span-3 bg-lime-200">
+                  Topics
+                </div>
+                <div className="text-center col-span-1 bg-indigo-200">Data</div>
+              </div>
+              <div className="">
+                {tags.map((tag) => (
+                  <div key={tag._id} className="grid grid-cols-4 w-full ">
+                    <div className="text-left pl-4 col-span-3 bg-lime-200 flex gap-1">
+                      <ReactIcon icon={tag.iconName} size={30} color="black" />
+                      {tag.name}
+                    </div>
+                    <div className="text-center col-span-1 bg-indigo-200">
+                      {blogs.filter((el) =>
+                        el.tags.some((elm) => elm.slug === tag.slug)
+                      ).length || 0}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>{" "}

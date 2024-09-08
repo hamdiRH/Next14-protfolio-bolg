@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { BsPostcard } from "react-icons/bs";
 import Loading from "@/components/Loading";
@@ -10,37 +10,64 @@ import useFetchData from "@/hooks/useFetchData";
 import Dataloading from "@/components/DataLoading";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Pagination from "rc-pagination";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchBlogs } from "@/redux/actions/blogActions";
 
 export default function blogs() {
+  const {
+    blogs,
+    loadingBlogs,
+    errorBlogs,
+    searchQuery,
+    totalResults,
+    page,
+    limit,
+  } = useSelector((state) => state.blogs);
+  const dispatch = useDispatch();
+
   // pagination
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage] = useState(1);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [perPage] = useState(1);
   // fetch blogs form api endpoint with hooks
-  const { alldata, loading } = useFetchData("/api/blogapi");
+  // const { alldata, loading } = useFetchData("/api/blogapi");
   // filtering Publish blogs
 
   // function to handle page change
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  const indexOfLastblog = currentPage * perPage;
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // const indexOfLastblog = currentPage * perPage;
 
-  const indexOfFirstblog = indexOfLastblog - perPage;
+  // const indexOfFirstblog = indexOfLastblog - perPage;
 
-  const currentBlogs = alldata.slice(indexOfFirstblog, indexOfLastblog);
-  const publishBlogs = currentBlogs.filter((ab) => ab.status === "publish");
+  // const currentBlogs = alldata.slice(indexOfFirstblog, indexOfLastblog);
+  // const publishBlogs = currentBlogs.filter((ab) => ab.status === "publish");
 
-  const allblog = alldata.filter((ab) => ab.status === "publish").length;
-  const pageNumbers = [];
+  // const allblog = alldata.filter((ab) => ab.status === "publish").length;
+  // const pageNumbers = [];
 
-  for (let i = 0; i < Math.ceil(allblog / perPage); i++) {
-    pageNumbers.push(i);
-  }
-  const [searchQuery, setSearchQuery] = useState("");
-  const filtredBlog =
-    searchQuery.trim() === ""
-      ? publishBlogs
-      : publishBlogs.filter((blog) =>
-          blog.title.toLowerCase().includes(searchQuery.toLocaleLowerCase())
-        );
+  // for (let i = 0; i < Math.ceil(allblog / perPage); i++) {
+  //   pageNumbers.push(i);
+  // }
+  // const [searchQuery, setSearchQuery] = useState("");
+  // const filtredBlog =
+  //   searchQuery.trim() === ""
+  //     ? publishBlogs
+  //     : publishBlogs.filter((blog) =>
+  //         blog.title.toLowerCase().includes(searchQuery.toLocaleLowerCase())
+  //       );
+
+  const handlePageChange = (current, pageSize) => {
+    dispatch(setPage(current));
+  };
+
+  useEffect(() => {
+    dispatch(
+      fetchBlogs({
+        page,
+        limit,
+        status: "publish",
+      })
+    );
+  }, [dispatch]);
 
   return (
     <ProtectedRoute>
@@ -76,23 +103,23 @@ export default function blogs() {
               </tr>
             </thead>
             <tbody>
-              {loading ? (
+              {loadingBlogs ? (
                 <tr>
                   <td>
                     <Dataloading />
                   </td>
                 </tr>
-              ) : filtredBlog.length === 0 ? (
+              ) : blogs.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="text-center">
                     No Publish Blog
                   </td>
                 </tr>
               ) : (
-                filtredBlog.map((blog, index) => {
+                blogs.map((blog, index) => {
                   return (
                     <tr key={blog._id}>
-                      <td>{indexOfFirstblog + index + 1}</td>
+                      <td>{limit * (page - 1) + index + 1}</td>
                       <td>{blog.title}</td>
                       <td>{blog.slug}</td>
                       <td>
@@ -117,7 +144,7 @@ export default function blogs() {
           </table>
           {/* pagination pending start after database add ... */}
           <Pagination
-            total={total}
+            total={totalResults}
             pageSize={limit}
             currentPage={page}
             onChange={handlePageChange}

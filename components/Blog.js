@@ -16,6 +16,7 @@ export default function Blog({
   description: existingDescription,
   tags: existingTags,
   status: existingStatus,
+  file: fileUrl,
 }) {
   const [redirect, setRedirect] = useState(false);
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function Blog({
   const [category, setCategory] = useState(existingCategory || []);
   const [description, setDescription] = useState(existingDescription || "");
   const [allTags, setAllTags] = useState(existingTags || []);
+
   const [status, setStatus] = useState(existingStatus || "draft");
   const [file, setFile] = useState(null);
   const [uploadedData, setUploadedData] = useState();
@@ -53,12 +55,12 @@ export default function Blog({
   async function createProduct(ev) {
     ev.preventDefault();
     const formData = new FormData();
-    formData.append("file", file);
-    formData.append("title", title);
-    formData.append("slug", slug);
-    formData.append("category", category);
-    formData.append("tags", JSON.stringify(tags));
-    formData.append("status", status);
+    if (file) formData.append("file", file);
+    if (title) formData.append("title", title);
+    if (slug) formData.append("slug", slug);
+    if (category) formData.append("category", category);
+    if (tags) formData.append("tags", JSON.stringify(tags));
+    if (status) formData.append("status", status);
 
     const response = await fetch("/api/upload", {
       method: "POST",
@@ -113,7 +115,9 @@ export default function Blog({
   return (
     <form className="addWebsiteform" onSubmit={createProduct}>
       {/* blog title */}
-      <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
+      <div
+        className="w-100 flex flex-col flex-left mb-2" /**data-aos="fade-up"*/
+      >
         <label htmlFor="title">Title</label>
         <input
           type="text"
@@ -128,7 +132,9 @@ export default function Blog({
         />
       </div>
       {/* blog slug */}
-      <div className="w-100 flex flex-col flex-left mb-2" data-aos="fade-up">
+      <div
+        className="w-100 flex flex-col flex-left mb-2" /**data-aos="fade-up"*/
+      >
         <label htmlFor="slug">Slug</label>
         <input
           type="text"
@@ -165,7 +171,9 @@ export default function Blog({
       </div> */}
 
       {/* tags */}
-      <div className="w-100 flex flex-col flex-left mb-25 " data-aos="fade-up">
+      <div
+        className="w-100 flex flex-col flex-left mb-25 " /**data-aos="fade-up"*/
+      >
         <label htmlFor="tags">tags</label>
 
         <Select
@@ -175,6 +183,9 @@ export default function Blog({
           components={animatedComponents}
           closeMenuOnSelect={false}
           className="custom-multiselect"
+          defaultValue={
+            existingTags?.map((el) => ({ value: el._id, label: el.slug })) || []
+          }
         />
       </div>
       {/* Image cover */}
@@ -187,6 +198,14 @@ export default function Blog({
               crossOrigin="anonymous"
               referrerPolicy="origin"
               src={file.preview}
+              alt="img drop"
+              style={{ objectFit: "contain", width: "100%", height: "100%" }}
+            />
+          ) : fileUrl?.file_url ? (
+            <img
+              crossOrigin="anonymous"
+              referrerPolicy="origin"
+              src={fileUrl?.file_url}
               alt="img drop"
               style={{ objectFit: "contain", width: "100%", height: "100%" }}
             />
@@ -267,7 +286,7 @@ export default function Blog({
         />
       </div>
       {/* Save button */}
-      <div className="w-100 mb-2" data-aos="fade-up">
+      <div className="w-100 mb-2" /**data-aos="fade-up"*/>
         <button type="submit" className="w-100 addwebbtn flex-center">
           SAVE BLOG
         </button>

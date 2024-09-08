@@ -38,13 +38,18 @@ const blogsSlice = createSlice({
       })
       .addCase(FETCH_BLOGS_FULFILLED, (state, action) => {
         state.loadingBlogs = false;
-        state.blogs = action.payload;
-        state.publicBlogsCount = action.payload.filter(
-          (blog) => blog.status === "publish"
-        ).length;
-        state.draftBlogsCount = action.payload.filter(
+        state.blogs = action.payload.blogs;
+
+        if (action.payload.currentPage)
+          state.publicBlogsCount = action.payload.blogs.filter(
+            (blog) => blog.status === "publish"
+          ).length;
+        state.draftBlogsCount = action.payload.blogs.filter(
           (blog) => blog.status === "draft"
         ).length;
+        state.totalResults = action.payload.totalResults;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
       })
       .addCase(FETCH_BLOGS_REJECTED, (state, action) => {
         state.loadingBlogs = false;

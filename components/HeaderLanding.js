@@ -79,7 +79,10 @@ export default function HeaderLanding() {
       <div className="container header">
         <div className="logo">
           <Link href="/">
-            <h1>Blog</h1>
+            <h1 className="text-2xl ">
+              Way<span className="text-red-500">2</span>C
+              <span className="text-red-500">{"{}"}</span>de
+            </h1>
           </Link>
         </div>
         <div className="searchbar">
@@ -93,18 +96,20 @@ export default function HeaderLanding() {
           />
         </div>
         <div className="nav_list_dark">
-          <ul>
-            <li>
-              <Link href="/">home</Link>
-            </li>
-            <li>
-              <Link href="/">About Me</Link>
-            </li>
-            <li>
-              <Link href="/">Contact</Link>
-            </li>
-            <li>{session && <Link href="/admin">Dashboard</Link>}</li>
-          </ul>
+          {process.env.NEXT_PUBLIC_env == "dev" && (
+            <ul>
+              <li>
+                <Link href="/">Home</Link>
+              </li>
+              <li>
+                <Link href="/">About Me</Link>
+              </li>
+              <li>
+                <Link href="/">Contact</Link>
+              </li>
+              <li>{session && <Link href="/admin">Dashboard</Link>}</li>
+            </ul>
+          )}
           {/* for mobile device */}
           <div className="navlist_mobile_ul">
             <button onClick={toggleDarkMode}>
