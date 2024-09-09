@@ -1,9 +1,10 @@
+"use client";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+// import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkGfm from "remark-gfm";
 import { FaGithub, FaTwitter, FaInstagram } from "react-icons/fa";
 import Link from "next/link";
@@ -47,7 +48,7 @@ export default function Slug() {
     else if (match) {
       return (
         <div style={{ position: "relative" }}>
-          <SyntaxHighlighter
+          {/*  <SyntaxHighlighter
             style={a11yDark}
             language={match[1]}
             PreTag="pre"
@@ -61,7 +62,7 @@ export default function Slug() {
               },
             }}
             children={String(children).replace(/\n$/, "")}
-          />
+          />*/}
           <button
             style={{
               position: "absolute",
@@ -164,7 +165,7 @@ export default function Slug() {
                 <div className="topics_list">
                   <Link href="/topics/htmlcssjs">
                     <div className="topics">
-                      <div className="flex flex center topics_svg">
+                      <div className="flex  center topics_svg">
                         <FaHtml5 />
                       </div>
                       <h3>Html, Css & JavaScript</h3>
@@ -180,7 +181,7 @@ export default function Slug() {
                   </Link>
                   <Link href="/topics/database">
                     <div className="topics">
-                      <div className="flex flex center topics_svg">
+                      <div className="flex  center topics_svg">
                         <FiDatabase />
                       </div>
                       <h3>database</h3>
